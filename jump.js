@@ -312,3 +312,11 @@ rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRigh
 
 jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
 jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
+
+const sounds = {
+  jump: new Audio('jump.wav'),
+  land: new Audio('land.wav'),
+  spring: new Audio('spring.wav'),
+  score: new Audio('score.wav'),
+  milestone: new Audio('milestone.wav')
+};
