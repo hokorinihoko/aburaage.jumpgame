@@ -13,21 +13,24 @@ html, body{
   color:var(--text);
 }
 
-.wrap{
-  display:flex;
-  height:100vh;
-  align-items:center;
-  justify-content:center;
-  gap:20px;
-  padding:20px;
-  box-sizing:border-box;
-  position:relative;
+.wrap {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-canvas{
-  background:linear-gradient(180deg,#071021 0%, #062032 60%);
-  border-radius:10px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+canvas {
+  width: 80vw;
+  height: 80vh;
+  max-width: 480px;
+  max-height: 720px;
+  background: linear-gradient(180deg,#071021 0%, #062032 60%);
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
 }
 
 .ui{
