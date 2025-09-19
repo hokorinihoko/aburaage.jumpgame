@@ -300,3 +300,15 @@ function roundRect(ctx,x,y,width,height,radius,fill,stroke){
 
 init();
 render();
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
+const jumpBtn = document.getElementById('jumpBtn');
+
+leftBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowLeft']=true; });
+leftBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft']=false; });
+
+rightBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowRight']=true; });
+rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRight']=false; });
+
+jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
+jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
