@@ -315,7 +315,7 @@ jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=fa
 
 const sounds = {
   jump: new Audio('ジャンプ.wav'),
-  land: new Audio('ドンッ.pm3'),
-  spring: new Audio('バネ.pm3'),
-  milestone: new Audio('シャキーン.pm3')
+  land: new Audio('ドンッ.mp3'),
+  spring: new Audio('バネ.mp3'),
+  milestone: new Audio('シャキーン.mp3')
 };
