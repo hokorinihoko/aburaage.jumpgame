@@ -340,3 +340,26 @@ window.addEventListener('resize', () => {
 
 init();
 render();
+
+const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+
+  // サンプル描画（背景と四角）
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // 背景グラデーション
+    const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+    grad.addColorStop(0,'#071021');
+    grad.addColorStop(0.6,'#062032');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // サンプルのプレイヤー四角
+    ctx.fillStyle = 'var(--player)';
+    ctx.fillRect(100,150,50,50);
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
