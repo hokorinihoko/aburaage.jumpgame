@@ -162,7 +162,7 @@
   
     const topThreshold = H * 0.35;
     const targetCameraY = player.y - topThreshold;
-    cameraY += (targetCameraY - cameraY) * 0.08; // カメラを滑らかに追従させる
+    cameraY += (targetCameraY - cameraY) * 0.08;
   
     platforms = platforms.filter(p => p.y - cameraY < H + 400);
   
@@ -175,17 +175,14 @@
       showGameOver();
     }
   
-// プラットフォーム消去条件を緩める
 platforms = platforms.filter(p => p.y - cameraY < H + 400 && p.y - cameraY > -200);
   
-// 上方向にプラットフォームを補充（画面上に少し余裕を持たせる）
 const topVisibleY = cameraY - 100;
 let minY = Math.min(...platforms.map(p => p.y), player.y);
   
-// プレイヤーが上方向に移動しているときだけ生成
 if(player.vy < 0){ 
     while(minY > topVisibleY){
-        const gap = 80 + Math.random()*20; // 高い位置ほど間隔が広くなる
+        const gap = 80 + Math.random()*20;
         spawnPlatform(minY - gap);
         minY -= gap;
     }
