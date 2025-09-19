@@ -215,11 +215,16 @@ if(player.vy < 0){
 
     ctx.fillStyle = '#e6f0ff'; ctx.font = '16px system-ui, sans-serif'; ctx.fillText('スコア: ' + score, 12, 22);
 
-    if (!running && !document.getElementById('gameOverOverlay').style.display){
-      ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0,H/2 - 36, W, 72);
-      ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.font='20px system-ui'; ctx.fillText('ゲーム停止中 - 開始ボタンかRで再開', W/2, H/2 + 6); ctx.textAlign='left';
-    }
+  if (!running && document.getElementById('gameOverOverlay').style.display === 'none'){
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(0,H/2 - 36, W, 72);
+    ctx.fillStyle='#fff';
+    ctx.textAlign='center';
+    ctx.font='20px system-ui';
+    ctx.fillText('ゲーム停止中 - 開始ボタンかRで再開', W/2, H/2 + 6);
+    ctx.textAlign='left';
   }
+
 
   function showGameOver(){
     const overlay = document.getElementById('gameOverOverlay');
