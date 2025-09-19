@@ -74,10 +74,10 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{ init(); star
 
 // サウンド
 const sounds = {
-  jump: new Audio('sound effects/jump.wav'),
-  land: new Audio('sound effects/land.mp3'),
-  spring: new Audio('sound effects/spring.mp3'),
-  milestone: new Audio('sound effects/milestone.mp3')
+  jump: new Audio('sound_effects/jump.wav'),
+  land: new Audio('sound_effects/land.mp3'),
+  spring: new Audio('sound_effects/spring.mp3'),
+  milestone: new Audio('sound_effects/milestone.mp3')
 };
 
 // ゲーム初期化
