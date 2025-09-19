@@ -33,25 +33,69 @@ let score = 0;
 let maxHeight = player.y;
 
 const keys = {};
-window.addEventListener('keydown', e => { keys[e.code] = true; if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } });
+window.addEventListener('keydown', e => { 
+  keys[e.code] = true; 
+  if(e.code === 'KeyR'){ 
+    init(); 
+    start(); 
+    hideGameOver(); 
+  } 
+});
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 
-canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
-canvas.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
-canvas.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft'] = false; keys['ArrowRight'] = false; });
+canvas.addEventListener('touchstart', e => { 
+  e.preventDefault(); 
+  const t = e.touches[0]; 
+  handleTouch(t.clientX); 
+});
+canvas.addEventListener('touchmove', e => { 
+  e.preventDefault(); 
+  const t = e.touches[0]; 
+  handleTouch(t.clientX); 
+});
+canvas.addEventListener('touchend', e => { 
+  e.preventDefault(); 
+  keys['ArrowLeft'] = false; 
+  keys['ArrowRight'] = false; 
+});
 
 function handleTouch(x){
   const rect = canvas.getBoundingClientRect();
   const cx = x - rect.left;
-  if (cx < rect.width*0.4){ keys['ArrowLeft'] = true; keys['ArrowRight'] = false; }
-  else if (cx > rect.width*0.6){ keys['ArrowRight'] = true; keys['ArrowLeft'] = false; }
-  else { keys['ArrowLeft'] = false; keys['ArrowRight'] = false; keys['Space'] = true; }
+  if (cx < rect.width*0.4){ 
+    keys['ArrowLeft'] = true; 
+    keys['ArrowRight'] = false; 
+  }
+  else if (cx > rect.width*0.6){ 
+    keys['ArrowRight'] = true; 
+    keys['ArrowLeft'] = false; 
+  }
+  else { 
+    keys['ArrowLeft'] = false; 
+    keys['ArrowRight'] = false; 
+    keys['Space'] = true; 
+  }
 }
 
-document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running) { start(); hideGameOver(); } else { init(); start(); hideGameOver(); } });
-document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused = !paused; document.getElementById('pauseBtn').textContent = paused ? '再開' : '一時停止'; });
-
-document.getElementById('resetBtn').addEventListener('click', () => { init(); start(); hideGameOver(); });
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  if(!running) { 
+    start(); 
+    hideGameOver(); 
+  } else { 
+    init(); 
+    start(); 
+    hideGameOver(); 
+  } 
+});
+document.getElementById('pauseBtn').addEventListener('click', ()=>{
+  paused = !paused; 
+  document.getElementById('pauseBtn').textContent = paused ? '再開' : '一時停止'; 
+});
+document.getElementById('resetBtn').addEventListener('click', () => { 
+  init(); 
+  start(); 
+  hideGameOver(); 
+});
 
 function init(){
   cameraY = 0;
@@ -79,11 +123,14 @@ function generateInitialPlatforms(){
   platforms[0].x = W/2 - 60;
 }
 
-  function spawnPlatform(y){
+function spawnPlatform(y){
   const x = Math.random()*(W-PLATFORM_WIDTH);
   let type = 'normal';
   let vx = 0;
-  if (Math.random() < 0.12){ type = 'moving'; vx = (Math.random()<0.5? -1:1) * (1+Math.random()*1.2); }
+  if (Math.random() < 0.12){ 
+    type = 'moving'; 
+    vx = (Math.random()<0.5? -1:1) * (1+Math.random()*1.2); 
+  }
   if (Math.random() < 0.06) type = 'spring';
   platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type,vx});
 }
@@ -101,118 +148,127 @@ function checkPlatformCollision(p){
     }
   }
   return false;
+}
+
+function start(){
+  if (running) return;
+  running = true;
+  lastTimestamp = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function loop(ts){
+  if (!running) return;
+  const dt = Math.min(34, ts - lastTimestamp);
+  lastTimestamp = ts;
+  if (!paused) update(dt/16);
+  render();
+  requestAnimationFrame(loop);
+}
+
+function update(delta){
+  let move = 0;
+  if (keys['ArrowLeft'] || keys['KeyA']) move -= 1;
+  if (keys['ArrowRight'] || keys['KeyD']) move += 1;
+  player.vx += move * 0.6 * player.speed * delta;
+  player.vx *= friction;
+
+  if (player.vx > player.maxSpeed) player.vx = player.maxSpeed;
+  if (player.vx < -player.maxSpeed) player.vx = -player.maxSpeed;
+
+  const jumpPressed = keys['Space'] || keys['KeyZ'] || keys['ArrowUp'];
+  if (jumpPressed && player.onGround){ 
+    player.vy = player.jumpPower; 
+    player.onGround = false; 
   }
-  
-  function start(){
-    if (running) return;
-    running = true;
-    lastTimestamp = performance.now();
-    requestAnimationFrame(loop);
+  if (keys['Space'] && !navigator.maxTouchPoints) keys['Space'] = false;
+
+  player.vy += gravity * delta;
+
+  player.x += player.vx * delta;
+  player.y += player.vy * delta;
+
+  if (player.x < -player.w) player.x = W + player.w;
+  if (player.x > W + player.w) player.x = -player.w;
+
+  player.onGround = false;
+  for (let p of platforms){
+    if (checkPlatformCollision(p)){
+      player.y = p.y - player.h/2;
+      player.vy = 0;
+      player.onGround = true;
+      if (p.type === 'spring') player.vy = player.jumpPower * 1.6;
+      if (p.type === 'moving') player.x += p.vx * 2;
+    }
   }
-  
-  function loop(ts){
-    if (!running) return;
-    const dt = Math.min(34, ts - lastTimestamp);
-    lastTimestamp = ts;
-    if (!paused) update(dt/16);
-    render();
-    requestAnimationFrame(loop);
+
+  for (let p of platforms){
+    if (p.type === 'moving'){
+      p.x += p.vx * delta;
+      if (p.x < 0 || p.x + p.w > W) p.vx *= -1;
+    }
   }
-  
-  function update(delta){
-    let move = 0;
-    if (keys['ArrowLeft'] || keys['KeyA']) move -= 1;
-    if (keys['ArrowRight'] || keys['KeyD']) move += 1;
-    player.vx += move * 0.6 * player.speed * delta;
-    player.vx *= friction;
-  
-    if (player.vx > player.maxSpeed) player.vx = player.maxSpeed;
-    if (player.vx < -player.maxSpeed) player.vx = -player.maxSpeed;
-  
-    const jumpPressed = keys['Space'] || keys['KeyZ'] || keys['ArrowUp'];
-    if (jumpPressed && player.onGround){ player.vy = player.jumpPower; player.onGround = false; }
-    if (keys['Space'] && !navigator.maxTouchPoints) keys['Space'] = false;
-  
-    player.vy += gravity * delta;
-  
-    player.x += player.vx * delta;
-    player.y += player.vy * delta;
-  
-    if (player.x < -player.w) player.x = W + player.w;
-    if (player.x > W + player.w) player.x = -player.w;
-  
-    player.onGround = false;
-    for (let p of platforms){
-      if (checkPlatformCollision(p)){
-        player.y = p.y - player.h/2;
-        player.vy = 0;
-        player.onGround = true;
-        if (p.type === 'spring') player.vy = player.jumpPower * 1.6;
-        if (p.type === 'moving') player.x += p.vx * 2;
-      }
-    }
-  
-    for (let p of platforms){
-      if (p.type === 'moving'){
-        p.x += p.vx * delta;
-        if (p.x < 0 || p.x + p.w > W) p.vx *= -1;
-      }
-    }
-  
-    const topThreshold = H * 0.35;
-    const targetCameraY = player.y - topThreshold;
-    cameraY += (targetCameraY - cameraY) * 0.08;
-  
-    platforms = platforms.filter(p => p.y - cameraY < H + 400);
-  
-    if (player.y < maxHeight) maxHeight = player.y;
-    score = Math.max(0, Math.floor(H - maxHeight));
-    document.getElementById('score').textContent = 'スコア: ' + score;
-  
-    if (player.y - cameraY > H + 60){
-      running = false;
-      showGameOver();
-    }
-  
-platforms = platforms.filter(p => p.y - cameraY < H + 400 && p.y - cameraY > -200);
-  
-const topVisibleY = cameraY - 100;
-let minY = Math.min(...platforms.map(p => p.y), player.y);
-  
-if(player.vy < 0){ 
+
+  const topThreshold = H * 0.35;
+  const targetCameraY = player.y - topThreshold;
+  cameraY += (targetCameraY - cameraY) * 0.08;
+
+  platforms = platforms.filter(p => p.y - cameraY < H + 400);
+
+  if (player.y < maxHeight) maxHeight = player.y;
+  score = Math.max(0, Math.floor(H - maxHeight));
+  document.getElementById('score').textContent = 'スコア: ' + score;
+
+  if (player.y - cameraY > H + 60){
+    running = false;
+    showGameOver();
+  }
+
+  platforms = platforms.filter(p => p.y - cameraY < H + 400 && p.y - cameraY > -200);
+
+  const topVisibleY = cameraY - 100;
+  let minY = Math.min(...platforms.map(p => p.y), player.y);
+
+  if(player.vy < 0){ 
     while(minY > topVisibleY){
-        const gap = 80 + Math.random()*20;
-        spawnPlatform(minY - gap);
-        minY -= gap;
+      const gap = 80 + Math.random()*20;
+      spawnPlatform(minY - gap);
+      minY -= gap;
     }
-} 
+  }
+}
 
+function render(){
+  ctx.clearRect(0,0,W,H);
+  drawBackground();
 
+  for (let p of platforms){
+    const drawY = p.y - cameraY;
+    ctx.fillStyle = '#0b2b2a';
+    ctx.fillRect(p.x, drawY + 4, p.w, p.h);
+    if (p.type === 'spring') ctx.fillStyle = '#ffd7a6';
+    else if (p.type === 'moving') ctx.fillStyle = '#a6f0df';
+    else ctx.fillStyle = '#8bd3c7';
+    roundRect(ctx, p.x, drawY, p.w, p.h, 4, true, false);
+    if (p.type === 'spring'){ ctx.fillStyle = '#c46a00'; ctx.fillRect(p.x + p.w/2 - 6, drawY - 6, 12, 6); }
   }
 
-  function render(){
-    ctx.clearRect(0,0,W,H);
-    drawBackground();
+  const px = player.x;
+  const py = player.y - cameraY;
+  ctx.beginPath(); 
+  ctx.ellipse(px, py + player.h/2 + 8, player.w*0.6, 6, 0,0,Math.PI*2); 
+  ctx.fillStyle = 'rgba(0,0,0,0.25)'; 
+  ctx.fill();
 
-    for (let p of platforms){
-      const drawY = p.y - cameraY;
-      ctx.fillStyle = '#0b2b2a';
-      ctx.fillRect(p.x, drawY + 4, p.w, p.h);
-      if (p.type === 'spring') ctx.fillStyle = '#ffd7a6';
-      else if (p.type === 'moving') ctx.fillStyle = '#a6f0df';
-      else ctx.fillStyle = '#8bd3c7';
-      roundRect(ctx, p.x, drawY, p.w, p.h, 4, true, false);
-      if (p.type === 'spring'){ ctx.fillStyle = '#c46a00'; ctx.fillRect(p.x + p.w/2 - 6, drawY - 6, 12, 6); }
-    }
+  ctx.fillStyle = '#ffd166';
+  roundRect(ctx, px - player.w/2, py - player.h/2, player.w, player.h, 6, true, false);
+  ctx.fillStyle = '#1b2430'; 
+  ctx.fillRect(px - 6, py - 6, 4, 4); 
+  ctx.fillRect(px + 2, py - 6, 4, 4);
 
-    const px = player.x;
-    const py = player.y - cameraY;
-    ctx.beginPath(); ctx.ellipse(px, py + player.h/2 + 8, player.w*0.6, 6, 0,0,Math.PI*2); ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fill();
-    ctx.fillStyle = '#ffd166';
-    roundRect(ctx, px - player.w/2, py - player.h/2, player.w, player.h, 6, true, false);
-    ctx.fillStyle = '#1b2430'; ctx.fillRect(px - 6, py - 6, 4, 4); ctx.fillRect(px + 2, py - 6, 4, 4);
-
-    ctx.fillStyle = '#e6f0ff'; ctx.font = '16px system-ui, sans-serif'; ctx.fillText('スコア: ' + score, 12, 22);
+  ctx.fillStyle = '#e6f0ff'; 
+  ctx.font = '16px system-ui, sans-serif'; 
+  ctx.fillText('スコア: ' + score, 12, 22);
 
   if (!running && document.getElementById('gameOverOverlay').style.display === 'none'){
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -223,50 +279,64 @@ if(player.vy < 0){
     ctx.fillText('ゲーム停止中 - 開始ボタンかRで再開', W/2, H/2 + 6);
     ctx.textAlign='left';
   }
+}
 
+function showGameOver(){
+  const overlay = document.getElementById('gameOverOverlay');
+  document.getElementById('finalScore').textContent = 'スコア: ' + score;
+  overlay.style.display = 'flex';
+}
 
-  function showGameOver(){
-    const overlay = document.getElementById('gameOverOverlay');
-    document.getElementById('finalScore').textContent = 'スコア: ' + score;
-    overlay.style.display = 'flex';
+function hideGameOver(){
+  document.getElementById('gameOverOverlay').style.display = 'none';
+}
+
+function drawBackground(){
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#071021'); 
+  grad.addColorStop(1,'#072033');
+  ctx.fillStyle = grad; 
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(10,20,35,0.28)';
+  for (let i=0;i<6;i++){
+    const baseY = H - (i*40 + (cameraY*0.02 % 120));
+    ctx.beginPath(); 
+    ctx.moveTo(-200, baseY);
+    ctx.lineTo(120, baseY - 80 - i*6);
+    ctx.lineTo(320, baseY - 20 - i*6);
+    ctx.lineTo(540, baseY - 60 - i*6);
+    ctx.lineTo(W+200, baseY);
+    ctx.closePath(); 
+    ctx.fill();
   }
+}
 
-  function hideGameOver(){
-    document.getElementById('gameOverOverlay').style.display = 'none';
-  }
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke === 'undefined') stroke = true;
+  if (typeof radius === 'undefined') radius = 5;
+  if (typeof radius === 'number') radius = {tl: radius, tr: radius, br: radius, bl: radius};
+  ctx.beginPath(); 
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y); 
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br); 
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height); 
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl); 
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath(); 
+  if (fill) ctx.fill(); 
+  if (stroke) ctx.stroke();
+}
 
-  function drawBackground(){
-    const grad = ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0,'#071021'); grad.addColorStop(1,'#072033');
-    ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle = 'rgba(10,20,35,0.28)';
-    for (let i=0;i<6;i++){
-      const baseY = H - (i*40 + (cameraY*0.02 % 120));
-      ctx.beginPath(); ctx.moveTo(-200, baseY);
-      ctx.lineTo(120, baseY - 80 - i*6);
-      ctx.lineTo(320, baseY - 20 - i*6);
-      ctx.lineTo(540, baseY - 60 - i*6);
-      ctx.lineTo(W+200, baseY);
-      ctx.closePath(); ctx.fill();
-    }
-  }
+window.addEventListener('resize', () => {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width; 
+  canvas.height = rect.height; 
+  W = canvas.width; 
+  H = canvas.height;
+});
 
-  function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-    if (typeof stroke === 'undefined') stroke = true;
-    if (typeof radius === 'undefined') radius = 5;
-    if (typeof radius === 'number') radius = {tl: radius, tr: radius, br: radius, bl: radius};
-    ctx.beginPath(); ctx.moveTo(x + radius.tl, y);
-    ctx.lineTo(x + width - radius.tr, y); ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-    ctx.lineTo(x + width, y + height - radius.br); ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-    ctx.lineTo(x + radius.bl, y + height); ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-    ctx.lineTo(x, y + radius.tl); ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-    ctx.closePath(); if (fill) ctx.fill(); if (stroke) ctx.stroke();
-  }
-
-  window.addEventListener('resize', () => {
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width; canvas.height = rect.height; W = canvas.width; H = canvas.height;
-  });
-
-  init();
-  render();
+init();
+render();
