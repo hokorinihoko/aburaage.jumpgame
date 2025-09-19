@@ -8,7 +8,7 @@ html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Hiragino Kak
   gap:20px;
   padding:20px;
   box-sizing:border-box;
-  position:relative; /* オーバーレイ用 */
+  position:relative;
   background:var(--bg);
 }
 canvas{
@@ -48,7 +48,6 @@ p{margin:6px 0;font-size:13px;line-height:1.4}
   display:none;
   z-index:10;
 }
-/* Canvas外側を暗くするオーバーレイ */
 .darkOutside{
   position:absolute;
   top:0; left:0;
