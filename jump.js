@@ -72,13 +72,6 @@ document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running)
 document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused=!paused; document.getElementById('pauseBtn').textContent = paused?'再開':'一時停止'; });
 document.getElementById('resetBtn').addEventListener('click', ()=>{ init(); start(); hideGameOver(); });
 
-// サウンド
-const sounds = {
-  jump: new Audio('sound_effects/jump.wav'),
-  land: new Audio('sound_effects/land.mp3'),
-  spring: new Audio('sound_effects/spring.mp3'),
-  milestone: new Audio('sound_effects/milestone.mp3')
-};
 
 // ゲーム初期化
 function init(){
@@ -312,3 +305,11 @@ rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRigh
 
 jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
 jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
+
+// サウンド
+const sounds = {
+  jump: new Audio('sound_effects/jump.wav'),
+  land: new Audio('sound_effects/land.mp3'),
+  spring: new Audio('sound_effects/spring.mp3'),
+  milestone: new Audio('sound_effects/milestone.mp3')
+};
