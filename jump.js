@@ -1,107 +1,106 @@
-<script>
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d');
-  let W = canvas.width, H = canvas.height;
-  
-  let cameraY = 0;
-  
-  const player = {
-    startX: W/2,
-    startY: H - 120,
-    x: W/2,
-    y: H - 120,
-    w: 32,
-    h: 40,
-    vx: 0,
-    vy: 0,
-    speed: 3.2,
-    jumpPower: -10.5,
-    onGround: false,
-    maxSpeed: 5
-  };
-  
-  const gravity = 0.45;
-  const friction = 0.98;
-  
-  let platforms = [];
-  const PLATFORM_WIDTH = 80;
-  const PLATFORM_HEIGHT = 12;
-  
-  let running = false;
-  let paused = false;
-  let lastTimestamp = 0;
-  let score = 0;
-  let maxHeight = player.y;
-  
-  const keys = {};
-  window.addEventListener('keydown', e => { keys[e.code] = true; if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } });
-  window.addEventListener('keyup', e => { keys[e.code] = false; });
-  
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
-  canvas.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
-  canvas.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft'] = false; keys['ArrowRight'] = false; });
-  
-  function handleTouch(x){
-    const rect = canvas.getBoundingClientRect();
-    const cx = x - rect.left;
-    if (cx < rect.width*0.4){ keys['ArrowLeft'] = true; keys['ArrowRight'] = false; }
-    else if (cx > rect.width*0.6){ keys['ArrowRight'] = true; keys['ArrowLeft'] = false; }
-    else { keys['ArrowLeft'] = false; keys['ArrowRight'] = false; keys['Space'] = true; }
-  }
-  
-  document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running) { start(); hideGameOver(); } else { init(); start(); hideGameOver(); } });
-  document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused = !paused; document.getElementById('pauseBtn').textContent = paused ? '再開' : '一時停止'; });
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+let W = canvas.width, H = canvas.height;
 
-  document.getElementById('resetBtn').addEventListener('click', () => { init(); start(); hideGameOver(); });
-  
-  function init(){
-    cameraY = 0;
-    platforms = [];
-    player.x = player.startX;
-    player.y = player.startY;
-    player.vx = 0;
-    player.vy = 0;
-    player.onGround = false;
-    maxHeight = player.y;
-    score = 0;
-    generateInitialPlatforms();
-    paused = false;
-    document.getElementById('pauseBtn').textContent = '一時停止';
-    hideGameOver();
-  }
-  
-  function generateInitialPlatforms(){
-    const gap = 90;
-    for(let i=0;i<20;i++){
-      const x = Math.random()*(W-PLATFORM_WIDTH);
-      const y = H - i*gap - 40;
-      platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type:'normal',vx:0});
-    }
-    platforms[0].x = W/2 - 60;
-  }
-  
-  function spawnPlatform(y){
+let cameraY = 0;
+
+const player = {
+  startX: W/2,
+  startY: H - 120,
+  x: W/2,
+  y: H - 120,
+  w: 32,
+  h: 40,
+  vx: 0,
+  vy: 0,
+  speed: 3.2,
+  jumpPower: -10.5,
+  onGround: false,
+  maxSpeed: 5
+};
+
+const gravity = 0.45;
+const friction = 0.98;
+
+let platforms = [];
+const PLATFORM_WIDTH = 80;
+const PLATFORM_HEIGHT = 12;
+
+let running = false;
+let paused = false;
+let lastTimestamp = 0;
+let score = 0;
+let maxHeight = player.y;
+
+const keys = {};
+window.addEventListener('keydown', e => { keys[e.code] = true; if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } });
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; handleTouch(t.clientX); });
+canvas.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft'] = false; keys['ArrowRight'] = false; });
+
+function handleTouch(x){
+  const rect = canvas.getBoundingClientRect();
+  const cx = x - rect.left;
+  if (cx < rect.width*0.4){ keys['ArrowLeft'] = true; keys['ArrowRight'] = false; }
+  else if (cx > rect.width*0.6){ keys['ArrowRight'] = true; keys['ArrowLeft'] = false; }
+  else { keys['ArrowLeft'] = false; keys['ArrowRight'] = false; keys['Space'] = true; }
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running) { start(); hideGameOver(); } else { init(); start(); hideGameOver(); } });
+document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused = !paused; document.getElementById('pauseBtn').textContent = paused ? '再開' : '一時停止'; });
+
+document.getElementById('resetBtn').addEventListener('click', () => { init(); start(); hideGameOver(); });
+
+function init(){
+  cameraY = 0;
+  platforms = [];
+  player.x = player.startX;
+  player.y = player.startY;
+  player.vx = 0;
+  player.vy = 0;
+  player.onGround = false;
+  maxHeight = player.y;
+  score = 0;
+  generateInitialPlatforms();
+  paused = false;
+  document.getElementById('pauseBtn').textContent = '一時停止';
+  hideGameOver();
+}
+
+function generateInitialPlatforms(){
+  const gap = 90;
+  for(let i=0;i<20;i++){
     const x = Math.random()*(W-PLATFORM_WIDTH);
-    let type = 'normal';
-    let vx = 0;
-    if (Math.random() < 0.12){ type = 'moving'; vx = (Math.random()<0.5? -1:1) * (1+Math.random()*1.2); }
-    if (Math.random() < 0.06) type = 'spring';
-    platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type,vx});
+    const y = H - i*gap - 40;
+    platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type:'normal',vx:0});
   }
-  
-  function checkPlatformCollision(p){
-    if (player.vy > 0){
-      const px1 = player.x - player.w/2;
-      const px2 = player.x + player.w/2;
-      const py = player.y + player.h/2;
-      const platX1 = p.x;
-      const platX2 = p.x + p.w;
-      const platY = p.y;
-      if (py <= platY + 6 && py + player.vy >= platY && px2 > platX1 && px1 < platX2){
-        return true;
-      }
+  platforms[0].x = W/2 - 60;
+}
+
+  function spawnPlatform(y){
+  const x = Math.random()*(W-PLATFORM_WIDTH);
+  let type = 'normal';
+  let vx = 0;
+  if (Math.random() < 0.12){ type = 'moving'; vx = (Math.random()<0.5? -1:1) * (1+Math.random()*1.2); }
+  if (Math.random() < 0.06) type = 'spring';
+  platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type,vx});
+}
+
+function checkPlatformCollision(p){
+  if (player.vy > 0){
+    const px1 = player.x - player.w/2;
+    const px2 = player.x + player.w/2;
+    const py = player.y + player.h/2;
+    const platX1 = p.x;
+    const platX2 = p.x + p.w;
+    const platY = p.y;
+    if (py <= platY + 6 && py + player.vy >= platY && px2 > platX1 && px1 < platX2){
+      return true;
     }
-    return false;
+  }
+  return false;
   }
   
   function start(){
@@ -271,4 +270,3 @@ if(player.vy < 0){
 
   init();
   render();
-  </script>
