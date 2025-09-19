@@ -3,8 +3,9 @@ const ctx = canvas.getContext('2d');
 
 let W, H;
 function resizeCanvas() {
-  W = window.innerWidth;
-  H = window.innerHeight;
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
   canvas.width = W;
   canvas.height = H;
 }
