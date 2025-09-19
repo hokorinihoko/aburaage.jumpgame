@@ -1,37 +1,30 @@
-<html lang="ja">
+<div class="wrap">
+  <canvas id="game" width="480" height="720"></canvas>
 
-<head>
-  <link rel="stylesheet" href="jump.css">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ホコリのジャンプアップ</title>
-</head>
-<body>
-  <div class="wrap">
-    <canvas id="game" width="480" height="720"></canvas>
-    <div class="ui">
-      <h1>ホコリのジャンプアップ</h1>
-      <p>目標：右上を目指してジャンプ！落ちたらゲームオーバー。</p>
-      <div class="score" id="score">スコア: 0</div>
-      <div class="controls">
-        <div><strong>操作</strong></div>
-        <div>← → : 左右移動</div>
-        <div>Space / Z / ↑ : ジャンプ</div>
-        <div>R : リスタート / ボタンでも可</div>
-      </div>
-      <div style="margin-top:10px">
-        <div class="btn" id="startBtn">ゲーム開始</div>
-        <div class="btn" id="pauseBtn">一時停止</div>
-      </div>
-      <div class="footer">ノート: ブラウザでこのファイルを開いて遊んでね。スマホでもタッチで操作できるよ（左右ボタンは画面端をタップ）。</div>
+  <!-- 外側暗くするオーバーレイ -->
+  <div class="darkOutside"></div>
+
+  <div class="ui">
+    <h1>ホコリのジャンプアップ</h1>
+    <p>目標：右上を目指してジャンプ！落ちたらゲームオーバー。</p>
+    <div class="score" id="score">スコア: 0</div>
+    <div class="controls">
+      <div><strong>操作</strong></div>
+      <div>← → : 左右移動</div>
+      <div>Space / Z / ↑ : ジャンプ</div>
+      <div>R : リスタート / ボタンでも可</div>
     </div>
-    <div id="gameOverOverlay">
-      <div>ゲームオーバー</div>
-      <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
-      <div style="margin-top:8px;font-size:16px;">Rキーまたはボタンでリスタート</div>
-      <div class="btn" id="resetBtn">リセット</div>
+    <div style="margin-top:10px">
+      <div class="btn" id="startBtn">ゲーム開始</div>
+      <div class="btn" id="pauseBtn">一時停止</div>
     </div>
+    <div class="footer">ノート: ブラウザでこのファイルを開いて遊んでね。スマホでもタッチで操作できます。</div>
   </div>
- <script src="jump.js"></script> 
-</body>
-</html>
+
+  <div id="gameOverOverlay">
+    <div>ゲームオーバー</div>
+    <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
+    <div style="margin-top:8px;font-size:16px;">Rキーまたはボタンでリスタート</div>
+    <div class="btn" id="resetBtn">リセット</div>
+  </div>
+</div>
