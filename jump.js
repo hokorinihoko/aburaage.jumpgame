@@ -35,7 +35,9 @@ function resetPlayer() {
 }
 resetPlayer();
 
-const gravity = 0.45;
+//重力
+const gravity = 0.45
+//滑り度
 const friction = 0.98;
 
 let platforms = [];
@@ -72,6 +74,25 @@ document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running)
 document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused=!paused; document.getElementById('pauseBtn').textContent = paused?'再開':'一時停止'; });
 document.getElementById('resetBtn').addEventListener('click', ()=>{ init(); start(); hideGameOver(); });
 
+// サウンド
+const sounds = {
+  jump: new Audio('sound_effects/jump.wav'),
+  land: new Audio('sound_effects/land.mp3'),
+  spring: new Audio('sound_effects/spring.mp3'),
+  milestone: new Audio('sound_effects/milestone.mp3'),
+  score: new Audio('sound_effects/score.mp3')
+};
+
+// 安全再生関数
+function playSound(name) {
+  if (sounds[name]) {
+    try { sounds[name].play(); } 
+    catch(e){ /* Chrome NotAllowedErrorなどは無視 */ }
+  }
+}
+
+// 前フレームの着地状態を保持
+let wasOnGround = false;
 
 // ゲーム初期化
 function init(){
@@ -139,7 +160,7 @@ function update(delta){
   if(jumpPressed && player.onGround){ 
     player.vy=player.jumpPower; 
     player.onGround=false; 
-    sounds.jump.play();
+    playSound('jump');
   }
   if(keys['Space'] && !navigator.maxTouchPoints) keys['Space']=false;
 
@@ -150,19 +171,20 @@ function update(delta){
   if(player.x<-player.w) player.x=W+player.w;
   if(player.x>W+player.w) player.x=-player.w;
 
-  let landed=false;
   player.onGround=false;
   for(let p of platforms){
     if(checkPlatformCollision(p)){
       player.y=p.y-player.h/2;
-      if(!player.onGround) landed=true;
       player.vy=0;
       player.onGround=true;
-      if(p.type==='spring'){ player.vy=player.jumpPower*1.6; sounds.spring.play(); }
+      if(p.type==='spring'){ player.vy=player.jumpPower*1.6; playSound('spring'); }
       if(p.type==='moving') player.x += p.vx*2;
     }
   }
-  if(landed) sounds.land.play();
+
+  // 着地した瞬間だけ鳴らす
+  if(player.onGround && !wasOnGround) playSound('land');
+  wasOnGround = player.onGround;
 
   for(let p of platforms){
     if(p.type==='moving'){
@@ -177,10 +199,34 @@ function update(delta){
 
   platforms=platforms.filter(p=>p.y-cameraY<H+400);
 
+function drawBackground(){
+  // 10000点ごとに t を計算
+  let t = Math.min(1, Math.floor(score / 10000) / 10); // 0〜1 に正規化
+  const topColor = `rgb(${7 + t*80},${16 + t*60},${33 + t*60})`;
+  const bottomColor = `rgb(${6 + t*60},${32 + t*60},${50 + t*60})`;
+
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0, topColor);
+  grad.addColorStop(1, bottomColor);
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,W,H);
+
+  // 雲の描画
+  ctx.fillStyle='rgba(255,255,255,0.1)';
+  for(let i=0;i<5;i++){
+    const cloudY=(H/2 - (cameraY*0.02)%H)+i*120;
+    ctx.beginPath();
+    ctx.ellipse(W*0.2+i*150, cloudY, 60,20,0,0,Math.PI*2);
+    ctx.ellipse(W*0.3+i*150, cloudY-10, 50,15,0,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+
   if(player.y<maxHeight) maxHeight=player.y;
   let newScore=Math.max(0, Math.floor(H-maxHeight));
-  if(Math.floor(newScore/1000)>Math.floor(score/1000)) sounds.milestone.play();
-  if(newScore>score && newScore%10===0) sounds.score.play();
+  if(Math.floor(newScore/10000)>Math.floor(score/10000)) playSound('milestone');
+  if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
   score=newScore;
   document.getElementById('score').textContent='スコア: '+score;
 
@@ -250,7 +296,6 @@ function showGameOver(){
 function hideGameOver(){ document.getElementById('gameOverOverlay').style.display='none'; }
 
 function drawBackground(){
-  // 高度に応じて背景色変化
   let t = Math.min(1, maxHeight/5000);
   const topColor = `rgb(${7 + t*80},${16 + t*60},${33 + t*60})`;
   const bottomColor = `rgb(${6 + t*60},${32 + t*60},${50 + t*60})`;
@@ -261,7 +306,6 @@ function drawBackground(){
   ctx.fillStyle=grad;
   ctx.fillRect(0,0,W,H);
 
-  // 雲の描画
   ctx.fillStyle='rgba(255,255,255,0.1)';
   for(let i=0;i<5;i++){
     const cloudY=(H/2 - (cameraY*0.02)%H)+i*120;
@@ -293,6 +337,8 @@ function roundRect(ctx,x,y,width,height,radius,fill,stroke){
 
 init();
 render();
+
+// 画面ボタン
 const leftBtn = document.getElementById('leftBtn');
 const rightBtn = document.getElementById('rightBtn');
 const jumpBtn = document.getElementById('jumpBtn');
@@ -305,11 +351,3 @@ rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRigh
 
 jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
 jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
-
-// サウンド
-const sounds = {
-  jump: new Audio('sound_effects/jump.wav'),
-  land: new Audio('sound_effects/land.mp3'),
-  spring: new Audio('sound_effects/spring.mp3'),
-  milestone: new Audio('sound_effects/milestone.mp3')
-};
