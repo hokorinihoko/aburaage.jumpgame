@@ -54,7 +54,9 @@ const keys = {};
 window.addEventListener('keydown', e => { 
   keys[e.code] = true; 
   if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } 
-});
+  if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } 
+  if(e.code === 'KeyM'){ paused = true; document.getElementById('pauseBtn').textContent = '再開'; }
+  if(e.code === 'KeyN'){ paused = false; document.getElementById('pauseBtn').textContent = '一時停止'; }
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 
 canvas.addEventListener('touchstart', e => handleTouch(e.touches[0].clientX));
