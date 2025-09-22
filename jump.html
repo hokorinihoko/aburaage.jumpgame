@@ -3,34 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ホコリのジャンプアップ</title>
+  <title>油揚げジャンプゲーム(aburaage.jumpgame)</title>
   <link rel="stylesheet" href="jump.css">
 </head>
 <body>
   <div class="wrap">
     <canvas id="game"></canvas>
     <div class="ui">
-      <h1>ホコリのジャンプアップ</h1>
-      <p>目標：右上を目指してジャンプ！落ちたらゲームオーバー。</p>
+      <h1>油揚げジャンプゲーム(aburaage.jumpgame)</h1>
+      <p>目標：どこまで上に進めるかを競う</p>
       <div class="score" id="score">スコア: 0</div>
       <div class="controls">
         <div><strong>操作</strong></div>
-        <div>← → : 左右移動</div>
-        <div>Space / Z / ↑ : ジャンプ</div>
-        <div>R : リスタート / ボタンでも可</div>
+        <div>a/←/左向きボタン:左へ移動</div>
+        <div>d/→/右向きボタン:右へ移動</div>
+        <div>space/z/↑/上向きボタン:ジャンプ</div>
+        <div>r/リスタートボタン:リスタート</div>
       </div>
       <div class="btns">
-        <div class="btn" id="startBtn">ゲーム開始</div>
+        <div class="btn" id="startBtn">リスタート</div>
         <div class="btn" id="pauseBtn">一時停止</div>
-      </div>
-      <div class="footer">スマホでもタッチ操作できます。画面下の左右ボタンで移動、ジャンプボタンでジャンプ。</div>
-    </div>
 
     <!-- ゲームオーバーオーバーレイ -->
     <div id="gameOverOverlay">
       <div>ゲームオーバー</div>
       <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
-      <div style="margin-top:8px;font-size:16px;">Rキーまたはボタンでリスタート</div>
+      <div style="margin-top:8px;font-size:16px;">Rキーまたはリスタートボタンでリスタート</div>
       <div class="btn" id="resetBtn">リセット</div>
     </div>
 
