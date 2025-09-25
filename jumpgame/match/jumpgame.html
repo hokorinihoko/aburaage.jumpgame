@@ -3,154 +3,150 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title> ホコリのジャンプアップ</title>
- <style>:root{
-  --bg:#0b1220; 
-  --platform:#8bd3c7; 
-  --player:#ffd166; 
-  --text:#e6f0ff;
-}
+  <title>ホコリのジャンプアップ</title>
+  <style>
+    :root{
+      --bg:#0b1220; 
+      --platform:#8bd3c7; 
+      --player:#ffd166; 
+      --text:#e6f0ff;
+    }
 
-html, body{
-  height:100%;
-  margin:0;
-  font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Segoe UI",Roboto,"Yu Gothic",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+    html, body{
+      height:100%;
+      margin:0;
+      font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Segoe UI",Roboto,"Yu Gothic",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-.wrap {
-  display: flex;
-  height: 100vh;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-  box-sizing: border-box;
-}
+    .wrap {
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-canvas {
-  width: 80vw;
-  height: 80vh;
-  max-width: 480px;
-  max-height: 720px;
-  background: linear-gradient(180deg,#071021 0%, #062032 60%);
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-}
+    canvas {
+      width: 80vw;
+      height: 80vh;
+      max-width: 480px;
+      max-height: 720px;
+      background: linear-gradient(180deg,#071021 0%, #062032 60%);
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
 
-.ui{
-  width:300px;
-  max-width:30vw;
-  color:var(--text);
-}
+    .ui{
+      width:300px;
+      max-width:30vw;
+      color:var(--text);
+    }
 
-h1{ margin:0 0 8px 0; font-size:18px }
-p{ margin:6px 0; font-size:13px; line-height:1.4 }
-.controls{ margin-top:12px }
-.btns{ margin-top:10px }
-.btn{
-  display:inline-block;
-  padding:8px 12px;
-  border-radius:8px;
-  background:#123243;
-  color:var(--text);
-  cursor:pointer;
-  margin-right:8px;
-}
-.footer{ margin-top:18px; font-size:12px; opacity:0.9 }
-.score{ font-weight:700; font-size:20px; margin-top:8px }
+    h1{ margin:0 0 8px 0; font-size:18px }
+    p{ margin:6px 0; font-size:13px; line-height:1.4 }
+    .controls{ margin-top:12px }
+    .btns{ margin-top:10px }
+    .btn{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:8px;
+      background:#123243;
+      color:var(--text);
+      cursor:pointer;
+      margin-right:8px;
+    }
+    .footer{ margin-top:18px; font-size:12px; opacity:0.9 }
+    .score{ font-weight:700; font-size:20px; margin-top:8px }
 
-@media(max-width:800px){
-  .wrap{ flex-direction:column }
-  .ui{ width:90vw; max-width:none }
-}
+    @media(max-width:800px){
+      .wrap{ flex-direction:column }
+      .ui{ width:90vw; max-width:none }
+    }
 
-/* ゲームオーバーオーバーレイ */
-#gameOverOverlay{
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  color:#fff;
-  font-size:22px;
-  display:none;
-  z-index:10;
-}
+    #gameOverOverlay{
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      color:#fff;
+      font-size:22px;
+      display:none;
+      z-index:10;
+    }
 
-/* スマホ用操作ボタン */
-#touchControls{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:500px;
-  display:flex;
-  justify-content:space-between;
-  pointer-events:none; /* タッチだけ反応 */
-  z-index:20;
-}
+    #touchControls{
+      position:absolute;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      width:90%;
+      max-width:500px;
+      display:flex;
+      justify-content:space-between;
+      pointer-events:none;
+      z-index:20;
+    }
 
-.touch-btn{
-  width:60px;
-  height:60px;
-  background:rgba(18,50,67,0.7);
-  color:white;
-  font-size:24px;
-  text-align:center;
-  line-height:60px;
-  border-radius:50%;
-  user-select:none;
-  pointer-events:auto;
-  touch-action:none;
-}
-</style>
+    .touch-btn{
+      width:60px;
+      height:60px;
+      background:rgba(18,50,67,0.7);
+      color:white;
+      font-size:24px;
+      text-align:center;
+      line-height:60px;
+      border-radius:50%;
+      user-select:none;
+      pointer-events:auto;
+      touch-action:none;
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <canvas id="game"></canvas>
-    <div class="ui">
-      <h1>ホコリのジャンプアップ</h1>
-      <p>目標：右上を目指してジャンプ！落ちたらゲームオーバー。</p>
-      <div class="score" id="score">スコア: 0</div>
-      <div class="controls">
-        <div><strong>操作</strong></div>
-        <div>← → : 左右移動</div>
-        <div>Space / Z / ↑ : ジャンプ</div>
-        <div>R : リスタート / ボタンでも可</div>
-      </div>
-      <div class="btns">
-        <div class="btn" id="startBtn">ゲーム開始</div>
-        <div class="btn" id="pauseBtn">一時停止</div>
-      </div>
-      <div class="footer">スマホでもタッチ操作できます。画面下の左右ボタンで移動、ジャンプボタンでジャンプ。</div>
+<div class="wrap">
+  <canvas id="game"></canvas>
+  <div class="ui">
+    <h1>ホコリのジャンプアップ</h1>
+    <p>目標：右上を目指してジャンプ！落ちたらゲームオーバー。</p>
+    <div class="score" id="score">スコア: 0</div>
+    <div class="controls">
+      <div><strong>操作</strong></div>
+      <div>← → : 左右移動</div>
+      <div>Space / Z / ↑ : ジャンプ</div>
+      <div>R : リスタート / ボタンでも可</div>
     </div>
-
-    <!-- ゲームオーバーオーバーレイ -->
-    <div id="gameOverOverlay">
-      <div>ゲームオーバー</div>
-      <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
-      <div style="margin-top:8px;font-size:16px;">Rキーまたはボタンでリスタート</div>
-      <div class="btn" id="resetBtn">リセット</div>
+    <div class="btns">
+      <div class="btn" id="startBtn">ゲーム開始</div>
+      <div class="btn" id="pauseBtn">一時停止</div>
     </div>
-
-    <!-- スマホ用操作ボタン -->
-    <div id="touchControls">
-      <div id="leftBtn" class="touch-btn">◀</div>
-      <div id="rightBtn" class="touch-btn">▶</div>
-      <div id="jumpBtn" class="touch-btn">▲</div>
-    </div>
+    <div class="footer">スマホでもタッチ操作できます。画面下の左右ボタンで移動、ジャンプボタンでジャンプ。</div>
   </div>
-</style>
-  <script>
+
+  <div id="gameOverOverlay">
+    <div>ゲームオーバー</div>
+    <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
+    <div style="margin-top:8px;font-size:16px;">Rキーまたはボタンでリスタート</div>
+    <div class="btn" id="resetBtn">リセット</div>
+  </div>
+
+  <div id="touchControls">
+    <div id="leftBtn" class="touch-btn">◀</div>
+    <div id="rightBtn" class="touch-btn">▶</div>
+    <div id="jumpBtn" class="touch-btn">▲</div>
+  </div>
+</div>
+
+<script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-
 let W, H;
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
@@ -185,11 +181,8 @@ function resetPlayer() {
 }
 resetPlayer();
 
-//重力
-const gravity = 0.45
-//滑り度
+const gravity = 0.45;
 const friction = 0.98;
-
 let platforms = [];
 const PLATFORM_WIDTH = 80;
 const PLATFORM_HEIGHT = 12;
@@ -205,7 +198,7 @@ window.addEventListener('keydown', e => {
   keys[e.code] = true; 
   if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } 
 });
-window.addEventListener('keyup', e => { keys[e.code] = false; });
+window.addEventListener('keyup', e => keys[e.code] = false);
 
 canvas.addEventListener('touchstart', e => handleTouch(e.touches[0].clientX));
 canvas.addEventListener('touchmove', e => handleTouch(e.touches[0].clientX));
@@ -219,12 +212,10 @@ function handleTouch(x){
   else { keys['ArrowLeft']=keys['ArrowRight']=false; keys['Space']=true; }
 }
 
-// ボタン操作
 document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running){start(); hideGameOver();} else {init(); start(); hideGameOver();} });
 document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused=!paused; document.getElementById('pauseBtn').textContent = paused?'再開':'一時停止'; });
 document.getElementById('resetBtn').addEventListener('click', ()=>{ init(); start(); hideGameOver(); });
 
-// サウンド
 const sounds = {
   jump: new Audio('sound_effects/jump.wav'),
   land: new Audio('sound_effects/land.mp3'),
@@ -233,18 +224,15 @@ const sounds = {
   score: new Audio('sound_effects/score.mp3')
 };
 
-// 安全再生関数
 function playSound(name) {
   if (sounds[name]) {
     try { sounds[name].play(); } 
-    catch(e){ /* Chrome NotAllowedErrorなどは無視 */ }
+    catch(e){ }
   }
 }
 
-// 前フレームの着地状態を保持
 let wasOnGround = false;
 
-// ゲーム初期化
 function init(){
   resizeCanvas();
   cameraY = 0;
@@ -258,7 +246,6 @@ function init(){
   hideGameOver();
 }
 
-// プラットフォーム生成
 function generateInitialPlatforms(){
   const gap = 90;
   for(let i=0;i<20;i++){
@@ -286,7 +273,25 @@ function checkPlatformCollision(p){
   return false;
 }
 
-// ゲームループ
+// --- 修正版：プラットフォーム処理 ---
+function handlePlatforms(){
+  player.onGround = false;
+  for(let i=0;i<platforms.length;i++){
+    let p = platforms[i];
+    if(i===0 || checkPlatformCollision(p)){
+      player.y = p.y - player.h/2;
+      player.vy = 0;
+      player.onGround = true;
+      if(p.type==='spring'){ player.vy = player.jumpPower*1.6; playSound('spring'); }
+      if(p.type==='moving') player.x += p.vx*2;
+    }
+    if(p.type==='moving'){
+      p.x += p.vx;
+      if(p.x<0 || p.x+p.w>W) p.vx*=-1;
+    }
+  }
+}
+
 function start(){ if(running) return; running=true; lastTimestamp=performance.now(); requestAnimationFrame(loop); }
 function loop(ts){
   if(!running) return;
@@ -321,42 +326,36 @@ function update(delta){
   if(player.x<-player.w) player.x=W+player.w;
   if(player.x>W+player.w) player.x=-player.w;
 
-  player.onGround=false;
-for(let i=0; i<platforms.length; i++){
-  let p = platforms[i];
-  if(i === 0 || checkPlatformCollision(p)){
-    player.y = p.y - player.h/2;
-    player.vy = 0;
-    player.onGround = true;
-    if(p.type==='spring'){ 
-      player.vy = player.jumpPower * 1.6; 
-      playSound('spring'); 
-    }
-    if(p.type==='moving') player.x += p.vx*2;
-  }
-}
-
-  
-  // 着地した瞬間だけ鳴らす
-  if(player.onGround && !wasOnGround) playSound('land');
-  wasOnGround = player.onGround;
-
-  for(let p of platforms){
-    if(p.type==='moving'){
-      p.x += p.vx*delta;
-      if(p.x<0 || p.x+p.w>W) p.vx*=-1;
-    }
-  }
+  handlePlatforms();
 
   const topThreshold=H*0.35;
   const targetCameraY=player.y-topThreshold;
   cameraY += (targetCameraY-cameraY)*0.08;
 
-  platforms=platforms.filter(p=>p.y-cameraY<H+400);
+  if(player.y-cameraY>H+60){ running=false; showGameOver(); }
 
+  if(player.y<maxHeight) maxHeight=player.y;
+  let newScore=Math.max(0, Math.floor(H-maxHeight));
+  if(Math.floor(newScore/10000)>Math.floor(score/10000)) playSound('milestone');
+  else if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
+  score=newScore;
+  document.getElementById('score').textContent='スコア: '+score;
+
+  // プラットフォーム生成
+  const topVisibleY=cameraY-100;
+  let minY=Math.min(...platforms.map(p=>p.y), player.y);
+  if(player.vy<0){ 
+    while(minY>topVisibleY){
+      const gap=80+Math.random()*20;
+      spawnPlatform(minY-gap);
+      minY-=gap;
+    }
+  }
+}
+
+// --- 描画 ---
 function drawBackground(){
-  // 10000点ごとに t を計算
-  let t = Math.min(1, Math.floor(score / 10000) / 10); // 0〜1 に正規化
+  let t = Math.min(1, maxHeight/5000);
   const topColor = `rgb(${7 + t*80},${16 + t*60},${33 + t*60})`;
   const bottomColor = `rgb(${6 + t*60},${32 + t*60},${50 + t*60})`;
 
@@ -366,7 +365,6 @@ function drawBackground(){
   ctx.fillStyle=grad;
   ctx.fillRect(0,0,W,H);
 
-  // 雲の描画
   ctx.fillStyle='rgba(255,255,255,0.1)';
   for(let i=0;i<5;i++){
     const cloudY=(H/2 - (cameraY*0.02)%H)+i*120;
@@ -377,27 +375,23 @@ function drawBackground(){
   }
 }
 
-
-  if(player.y<maxHeight) maxHeight=player.y;
-  let newScore=Math.max(0, Math.floor(H-maxHeight));
-  if(Math.floor(newScore/10000)>Math.floor(score/10000)) playSound('milestone');
-  if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
-  score=newScore;
-  document.getElementById('score').textContent='スコア: '+score;
-
-  if(player.y-cameraY>H+60){ running=false; showGameOver(); }
-
-  platforms=platforms.filter(p=>p.y-cameraY<H+400 && p.y-cameraY>-200);
-
-  const topVisibleY=cameraY-100;
-  let minY=Math.min(...platforms.map(p=>p.y), player.y);
-  if(player.vy<0){ 
-    while(minY>topVisibleY){
-      const gap=80+Math.random()*20;
-      spawnPlatform(minY-gap);
-      minY-=gap;
-    }
-  }
+function roundRect(ctx,x,y,width,height,radius,fill,stroke){
+  if(typeof stroke==='undefined') stroke=true;
+  if(typeof radius==='undefined') radius=5;
+  if(typeof radius==='number') radius={tl:radius,tr:radius,br:radius,bl:radius};
+  ctx.beginPath();
+  ctx.moveTo(x+radius.tl,y);
+  ctx.lineTo(x+width-radius.tr,y);
+  ctx.quadraticCurveTo(x+width,y,x+width,y+radius.tr);
+  ctx.lineTo(x+width,y+height-radius.br);
+  ctx.quadraticCurveTo(x+width,y+height,x+width-radius.br,y+height);
+  ctx.lineTo(x+radius.bl,y+height);
+  ctx.quadraticCurveTo(x,y+height,x,y+height-radius.bl);
+  ctx.lineTo(x,y+radius.tl);
+  ctx.quadraticCurveTo(x,y,x+radius.tl,y);
+  ctx.closePath();
+  if(fill) ctx.fill();
+  if(stroke) ctx.stroke();
 }
 
 function render(){
@@ -447,70 +441,18 @@ function showGameOver(){
   document.getElementById('finalScore').textContent='スコア: '+score;
   overlay.style.display='flex';
 }
-
 function hideGameOver(){ document.getElementById('gameOverOverlay').style.display='none'; }
-
-function drawBackground(){
-  let t = Math.min(1, maxHeight/5000);
-  const topColor = `rgb(${7 + t*80},${16 + t*60},${33 + t*60})`;
-  const bottomColor = `rgb(${6 + t*60},${32 + t*60},${50 + t*60})`;
-
-  const grad=ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, topColor);
-  grad.addColorStop(1, bottomColor);
-  ctx.fillStyle=grad;
-  ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle='rgba(255,255,255,0.1)';
-  for(let i=0;i<5;i++){
-    const cloudY=(H/2 - (cameraY*0.02)%H)+i*120;
-    ctx.beginPath();
-    ctx.ellipse(W*0.2+i*150, cloudY, 60,20,0,0,Math.PI*2);
-    ctx.ellipse(W*0.3+i*150, cloudY-10, 50,15,0,0,Math.PI*2);
-    ctx.fill();
-  }
-}
-
-function roundRect(ctx,x,y,width,height,radius,fill,stroke){
-  if(typeof stroke==='undefined') stroke=true;
-  if(typeof radius==='undefined') radius=5;
-  if(typeof radius==='number') radius={tl:radius,tr:radius,br:radius,bl:radius};
-  ctx.beginPath();
-  ctx.moveTo(x+radius.tl,y);
-  ctx.lineTo(x+width-radius.tr,y);
-  ctx.quadraticCurveTo(x+width,y,x+width,y+radius.tr);
-  ctx.lineTo(x+width,y+height-radius.br);
-  ctx.quadraticCurveTo(x+width,y+height,x+width-radius.br,y+height);
-  ctx.lineTo(x+radius.bl,y+height);
-  ctx.quadraticCurveTo(x,y+height,x,y+height-radius.bl);
-  ctx.lineTo(x,y+radius.tl);
-  ctx.quadraticCurveTo(x,y,x+radius.tl,y);
-  ctx.closePath();
-  if(fill) ctx.fill();
-  if(stroke) ctx.stroke();
-}
 
 init();
 render();
 
-// 画面ボタン
-const leftBtn = document.getElementById('leftBtn');
-const rightBtn = document.getElementById('rightBtn');
-const jumpBtn = document.getElementById('jumpBtn');
-
-leftBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowLeft']=true; });
-leftBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft']=false; });
-
-rightBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowRight']=true; });
-rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRight']=false; });
-
-jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
-jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
+// 画面下タッチボタン対応
+document.getElementById('leftBtn').addEventListener('touchstart',()=>keys['ArrowLeft']=true);
+document.getElementById('leftBtn').addEventListener('touchend',()=>keys['ArrowLeft']=false);
+document.getElementById('rightBtn').addEventListener('touchstart',()=>keys['ArrowRight']=true);
+document.getElementById('rightBtn').addEventListener('touchend',()=>keys['ArrowRight']=false);
+document.getElementById('jumpBtn').addEventListener('touchstart',()=>keys['Space']=true);
+document.getElementById('jumpBtn').addEventListener('touchend',()=>keys['Space']=false);
 </script>
 </body>
 </html>
-
-
-
-
-
