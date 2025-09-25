@@ -25,8 +25,6 @@ const player = {
 };
 
 function resetPlayer() {
-  player.startX = W / 2;
-  player.startY = H - 120;
   player.x = player.startX;
   player.y = player.startY;
   player.vx = 0;
@@ -35,9 +33,7 @@ function resetPlayer() {
 }
 resetPlayer();
 
-//重力
 const gravity = 0.45
-//滑り度
 const friction = 0.98;
 
 let platforms = [];
@@ -54,10 +50,8 @@ const keys = {};
 window.addEventListener('keydown', e => { 
   keys[e.code] = true; 
   if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } 
-  if(e.code === 'KeyR'){ init(); start(); hideGameOver(); } 
-  if(e.code === 'KeyM'){ paused = true; document.getElementById('pauseBtn').textContent = '再開'; }
-  if(e.code === 'KeyN'){ paused = false; document.getElementById('pauseBtn').textContent = '一時停止'; }
-window.addEventListener('keyup', e => { keys[e.code] = false; });
+});
+window.addEventListener('keyup', e => keys[e.code] = false);
 
 canvas.addEventListener('touchstart', e => handleTouch(e.touches[0].clientX));
 canvas.addEventListener('touchmove', e => handleTouch(e.touches[0].clientX));
@@ -71,12 +65,10 @@ function handleTouch(x){
   else { keys['ArrowLeft']=keys['ArrowRight']=false; keys['Space']=true; }
 }
 
-// ボタン操作
 document.getElementById('startBtn').addEventListener('click', ()=>{ if(!running){start(); hideGameOver();} else {init(); start(); hideGameOver();} });
 document.getElementById('pauseBtn').addEventListener('click', ()=>{ paused=!paused; document.getElementById('pauseBtn').textContent = paused?'再開':'一時停止'; });
 document.getElementById('resetBtn').addEventListener('click', ()=>{ init(); start(); hideGameOver(); });
 
-// サウンド
 const sounds = {
   jump: new Audio('sound_effects/jump.wav'),
   land: new Audio('sound_effects/land.mp3'),
@@ -85,18 +77,15 @@ const sounds = {
   score: new Audio('sound_effects/score.mp3')
 };
 
-// 安全再生関数
 function playSound(name) {
   if (sounds[name]) {
     try { sounds[name].play(); } 
-    catch(e){ /* Chrome NotAllowedErrorなどは無視 */ }
+    catch(e){}
   }
 }
 
-// 前フレームの着地状態を保持
 let wasOnGround = false;
 
-// ゲーム初期化
 function init(){
   resizeCanvas();
   cameraY = 0;
@@ -104,13 +93,12 @@ function init(){
   resetPlayer();
   maxHeight = player.y;
   score = 0;
-  generateInitialPlatforms();
   paused=false;
   document.getElementById('pauseBtn').textContent='一時停止';
   hideGameOver();
+  generateInitialPlatforms();
 }
 
-// プラットフォーム生成
 function generateInitialPlatforms(){
   const gap = 90;
   for(let i=0;i<20;i++){
@@ -119,6 +107,10 @@ function generateInitialPlatforms(){
     platforms.push({x,y,w:PLATFORM_WIDTH,h:PLATFORM_HEIGHT,type:'normal',vx:0});
   }
   platforms[0].x = W/2 - 60;
+  // プレイヤーを最初のプラットフォームに乗せる
+  player.x = platforms[0].x + PLATFORM_WIDTH/2;
+  player.y = platforms[0].y - player.h/2;
+  player.onGround = true;
 }
 
 function spawnPlatform(y){
@@ -138,8 +130,8 @@ function checkPlatformCollision(p){
   return false;
 }
 
-// ゲームループ
 function start(){ if(running) return; running=true; lastTimestamp=performance.now(); requestAnimationFrame(loop); }
+
 function loop(ts){
   if(!running) return;
   const dt=Math.min(34, ts-lastTimestamp);
@@ -175,8 +167,6 @@ function update(delta){
 
   player.onGround=false;
   for(let p of platforms){
-    // 最初のリフトだけは無条件で乗れる
-if (lift.index === 0) {
     if(checkPlatformCollision(p)){
       player.y=p.y-player.h/2;
       player.vy=0;
@@ -185,9 +175,7 @@ if (lift.index === 0) {
       if(p.type==='moving') player.x += p.vx*2;
     }
   }
-  }
 
-  // 着地した瞬間だけ鳴らす
   if(player.onGround && !wasOnGround) playSound('land');
   wasOnGround = player.onGround;
 
@@ -202,31 +190,9 @@ if (lift.index === 0) {
   const targetCameraY=player.y-topThreshold;
   cameraY += (targetCameraY-cameraY)*0.08;
 
-  platforms=platforms.filter(p=>p.y-cameraY<H+400);
+  platforms=platforms.filter(p=>p.y-cameraY<H+400 && p.y-cameraY>-200);
 
-function drawBackground(){
-  // 10000点ごとに t を計算
-  let t = Math.min(1, Math.floor(score / 10000) / 10); // 0〜1 に正規化
-  const topColor = `rgb(${7 + t*80},${16 + t*60},${33 + t*60})`;
-  const bottomColor = `rgb(${6 + t*60},${32 + t*60},${50 + t*60})`;
-
-  const grad=ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, topColor);
-  grad.addColorStop(1, bottomColor);
-  ctx.fillStyle=grad;
-  ctx.fillRect(0,0,W,H);
-
-  // 雲の描画
-  ctx.fillStyle='rgba(255,255,255,0.1)';
-  for(let i=0;i<5;i++){
-    const cloudY=(H/2 - (cameraY*0.02)%H)+i*120;
-    ctx.beginPath();
-    ctx.ellipse(W*0.2+i*150, cloudY, 60,20,0,0,Math.PI*2);
-    ctx.ellipse(W*0.3+i*150, cloudY-10, 50,15,0,0,Math.PI*2);
-    ctx.fill();
-  }
-}
-
+  if(player.y-cameraY>H+60){ running=false; showGameOver(); }
 
   if(player.y<maxHeight) maxHeight=player.y;
   let newScore=Math.max(0, Math.floor(H-maxHeight));
@@ -234,10 +200,6 @@ function drawBackground(){
   if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
   score=newScore;
   document.getElementById('score').textContent='スコア: '+score;
-
-  if(player.y-cameraY>H+60){ running=false; showGameOver(); }
-
-  platforms=platforms.filter(p=>p.y-cameraY<H+400 && p.y-cameraY>-200);
 
   const topVisibleY=cameraY-100;
   let minY=Math.min(...platforms.map(p=>p.y), player.y);
@@ -256,8 +218,6 @@ function render(){
 
   for(let p of platforms){
     const drawY=p.y-cameraY;
-    ctx.fillStyle='#0b2b2a';
-    ctx.fillRect(p.x, drawY+4, p.w, p.h);
     if(p.type==='spring') ctx.fillStyle='#ffd7a6';
     else if(p.type==='moving') ctx.fillStyle='#a6f0df';
     else ctx.fillStyle='#8bd3c7';
@@ -348,11 +308,9 @@ const leftBtn = document.getElementById('leftBtn');
 const rightBtn = document.getElementById('rightBtn');
 const jumpBtn = document.getElementById('jumpBtn');
 
-leftBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowLeft']=true; });
-leftBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowLeft']=false; });
-
-rightBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['ArrowRight']=true; });
-rightBtn.addEventListener('touchend', e => { e.preventDefault(); keys['ArrowRight']=false; });
-
-jumpBtn.addEventListener('touchstart', e => { e.preventDefault(); keys['Space']=true; });
-jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=false; });
+leftBtn.addEventListener('touchstart', e=>{ keys['ArrowLeft']=true; e.preventDefault(); });
+leftBtn.addEventListener('touchend', e=>{ keys['ArrowLeft']=false; e.preventDefault(); });
+rightBtn.addEventListener('touchstart', e=>{ keys['ArrowRight']=true; e.preventDefault(); });
+rightBtn.addEventListener('touchend', e=>{ keys['ArrowRight']=false; e.preventDefault(); });
+jumpBtn.addEventListener('touchstart', e=>{ keys['Space']=true; e.preventDefault(); });
+jumpBtn.addEventListener('touchend', e=>{ keys['Space']=false; e.preventDefault(); });
