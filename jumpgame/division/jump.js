@@ -175,6 +175,8 @@ function update(delta){
 
   player.onGround=false;
   for(let p of platforms){
+    // 最初のリフトだけは無条件で乗れる
+if (lift.index === 0) {
     if(checkPlatformCollision(p)){
       player.y=p.y-player.h/2;
       player.vy=0;
@@ -182,6 +184,7 @@ function update(delta){
       if(p.type==='spring'){ player.vy=player.jumpPower*1.6; playSound('spring'); }
       if(p.type==='moving') player.x += p.vx*2;
     }
+  }
   }
 
   // 着地した瞬間だけ鳴らす
