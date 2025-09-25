@@ -322,18 +322,20 @@ function update(delta){
   if(player.x>W+player.w) player.x=-player.w;
 
   player.onGround=false;
-  for(let p of platforms){
-    // 最初のリフトだけは無条件で乗れる
-if (platforms.indexOf(p) {
-    if(checkPlatformCollision(p)){
-      player.y=p.y-player.h/2;
-      player.vy=0;
-      player.onGround=true;
-      if(p.type==='spring'){ player.vy=player.jumpPower*1.6; playSound('spring'); }
-      if(p.type==='moving') player.x += p.vx*2;
+for(let i=0; i<platforms.length; i++){
+  let p = platforms[i];
+  if(i === 0 || checkPlatformCollision(p)){
+    player.y = p.y - player.h/2;
+    player.vy = 0;
+    player.onGround = true;
+    if(p.type==='spring'){ 
+      player.vy = player.jumpPower * 1.6; 
+      playSound('spring'); 
     }
+    if(p.type==='moving') player.x += p.vx*2;
   }
-  }
+}
+
   
   // 着地した瞬間だけ鳴らす
   if(player.onGround && !wasOnGround) playSound('land');
@@ -507,6 +509,7 @@ jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=fa
 </script>
 </body>
 </html>
+
 
 
 
