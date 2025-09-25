@@ -146,7 +146,7 @@ p{ margin:6px 0; font-size:13px; line-height:1.4 }
       <div id="jumpBtn" class="touch-btn">▲</div>
     </div>
   </div>
-</tyle>
+</style>
   <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -324,7 +324,7 @@ function update(delta){
   player.onGround=false;
   for(let p of platforms){
     // 最初のリフトだけは無条件で乗れる
-if (lift.index === 0) {
+if (platforms.indexOf(p) {
     if(checkPlatformCollision(p)){
       player.y=p.y-player.h/2;
       player.vy=0;
@@ -507,6 +507,7 @@ jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=fa
 </script>
 </body>
 </html>
+
 
 
 
