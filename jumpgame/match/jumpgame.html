@@ -333,7 +333,8 @@ if (lift.index === 0) {
       if(p.type==='moving') player.x += p.vx*2;
     }
   }
-
+  }
+  
   // 着地した瞬間だけ鳴らす
   if(player.onGround && !wasOnGround) playSound('land');
   wasOnGround = player.onGround;
@@ -506,5 +507,6 @@ jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=fa
 </script>
 </body>
 </html>
+
 
 
