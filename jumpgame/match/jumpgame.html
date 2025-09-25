@@ -323,6 +323,8 @@ function update(delta){
 
   player.onGround=false;
   for(let p of platforms){
+    // 最初のリフトだけは無条件で乗れる
+if (lift.index === 0) {
     if(checkPlatformCollision(p)){
       player.y=p.y-player.h/2;
       player.vy=0;
@@ -504,4 +506,5 @@ jumpBtn.addEventListener('touchend', e => { e.preventDefault(); keys['Space']=fa
 </script>
 </body>
 </html>
+
 
