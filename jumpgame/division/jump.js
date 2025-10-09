@@ -140,7 +140,9 @@ function loop(ts){
   render();
   requestAnimationFrame(loop);
 }
-
+let highScore = localStorage.getItem('highScore');
+if (highScore === null) highScore = 0;
+else highScore = Number(highScore);
 function update(delta){
   let move=0;
   if(keys['ArrowLeft']||keys['KeyA']) move-=1;
@@ -196,6 +198,7 @@ function update(delta){
 
   if(player.y<maxHeight) maxHeight=player.y;
   let newScore=Math.max(0, Math.floor(H-maxHeight));
+  if(highscore<newScore) localStorage.setItem('highscore', 'newScore');
   if(Math.floor(newScore/10000)>Math.floor(score/10000)) playSound('milestone');
   if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
   score=newScore;
