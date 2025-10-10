@@ -13,39 +13,38 @@
       <h1>油揚げジャンプゲーム(aburaage.jumpgame)</h1>
       <p>目標：どこまで上に進めるかを競う</p>
 
-      <!-- スコアとハイスコア両方表示 -->
       <div class="score" id="score">スコア: 0</div>
-      <div class="score" id="highScore">ハイスコア: 0</div>
+      <div class="highscore" id="highScore">ハイスコア: 0</div>
 
       <div class="controls">
         <div><strong>操作</strong></div>
-        <div>a/←/左向きボタン:左へ移動</div>
-        <div>d/→/右向きボタン:右へ移動</div>
-        <div>space/z/↑/上向きボタン:ジャンプ</div>
-        <div>r/リスタートボタン:リスタート</div>
+        <div>a/←/左向きボタン: 左へ移動</div>
+        <div>d/→/右向きボタン: 右へ移動</div>
+        <div>space/z/↑/上向きボタン: ジャンプ</div>
+        <div>r/リスタートボタン: リスタート</div>
       </div>
 
       <div class="btns">
         <div class="btn" id="startBtn">リスタート</div>
         <div class="btn" id="pauseBtn">一時停止</div>
       </div>
+
+      <!-- ゲームオーバーオーバーレイ -->
+      <div id="gameOverOverlay">
+        <div>ゲームオーバー</div>
+        <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
+        <div id="finalHighScore" style="margin-top:4px;">ハイスコア: 0</div>
+        <div style="margin-top:8px;font-size:16px;">Rキーまたはリスタートボタンでリスタート</div>
+        <div class="btn" id="resetBtn">リセット</div>
+      </div>
+
+      <!-- スマホ用操作ボタン -->
+      <div id="touchControls">
+        <div id="leftBtn" class="touch-btn">◀</div>
+        <div id="rightBtn" class="touch-btn">▶</div>
+        <div id="jumpBtn" class="touch-btn">▲</div>
+      </div>
     </div>
-  </div>
-
-  <!-- ゲームオーバー画面 -->
-  <div id="gameOverOverlay">
-    <div>ゲームオーバー</div>
-    <div id="finalScore" style="margin-top:10px;">スコア: 0</div>
-    <div id="finalHighScore" style="margin-top:6px;">ハイスコア: 0</div>
-    <div style="margin-top:8px;font-size:16px;">Rキーまたはリスタートボタンでリスタート</div>
-    <div class="btn" id="resetBtn">リセット</div>
-  </div>
-
-  <!-- スマホ用操作ボタン -->
-  <div id="touchControls">
-    <div id="leftBtn" class="touch-btn">◀</div>
-    <div id="rightBtn" class="touch-btn">▶</div>
-    <div id="jumpBtn" class="touch-btn">▲</div>
   </div>
 
   <script src="jump.js"></script>
