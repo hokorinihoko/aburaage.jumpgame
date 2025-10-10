@@ -198,11 +198,14 @@ function update(delta){
 
   if(player.y<maxHeight) maxHeight=player.y;
   let newScore=Math.max(0, Math.floor(H-maxHeight));
-  if(highscore<newScore) localStorage.setItem('highscore', 'newScore');
+  if(highscore<newScore) localStorage.setItem('highScore', newScore);
   if(Math.floor(newScore/10000)>Math.floor(score/10000)) playSound('milestone');
   if(Math.floor(newScore/1000)>Math.floor(score/1000)) playSound('score');
   score=newScore;
   document.getElementById('score').textContent='スコア: '+score;
+  document.getElementById('finalHighScore').textContent='ハイスコア: '+highScore;
+  overlay.style.display='flex';
+}
 
   const topVisibleY=cameraY-100;
   let minY=Math.min(...platforms.map(p=>p.y), player.y);
