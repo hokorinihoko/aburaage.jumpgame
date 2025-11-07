@@ -1,5 +1,5 @@
 // ==== 自分の現在バージョンをここに書く ====
-const localVersion = "1.2"; 
+let localVersion = "1.2"; 
 
 async function checkUpdate() {
   try {
@@ -15,6 +15,7 @@ async function checkUpdate() {
       if (ok) {
         // キャッシュを無視して全ファイルを再読み込み
         location.reload(true);
+        localVersion = latestVersion;
       }
     }
   } catch (err) {
