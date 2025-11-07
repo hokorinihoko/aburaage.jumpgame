@@ -335,3 +335,19 @@ rightBtn.addEventListener('touchstart', e=>{ keys['ArrowRight']=true; e.preventD
 rightBtn.addEventListener('touchend', e=>{ keys['ArrowRight']=false; e.preventDefault(); });
 jumpBtn.addEventListener('touchstart', e=>{ keys['Space']=true; e.preventDefault(); });
 jumpBtn.addEventListener('touchend', e=>{ keys['Space']=false; e.preventDefault(); });
+
+// スコアの保存と読み込み
+const SCORE_KEY = "aburaage_jump_highscore";
+
+// ページ読み込み時に記録を復元
+let highScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0;
+document.getElementById("highScore").textContent = "ハイスコア：" + highScore;
+
+// スコア更新時（例：ゲームオーバー時）
+function updateHighScore(currentScore) {
+  if (currentScore > highScore) {
+    highScore = currentScore;
+    localStorage.setItem(SCORE_KEY, highScore);
+    document.getElementById("highScore").textContent = "ハイスコア：" + highScore;
+  }
+}
