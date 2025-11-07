@@ -1,17 +1,17 @@
-const localVersion = "1.2"; // 今のバージョン（自分のファイル用）
+const localVersion = "1.0";
 
 async function checkUpdate() {
   try {
     const res = await fetch("https://raw.githubusercontent.com/hokorinihoko/aburaage.jumpgame/main/version.txt?" + Date.now());
-    const latestVersion = (await res.text()).trim();
+    const latest = (await res.text()).trim();
 
-    console.log("最新版:", latestVersion, "現在:", localVersion);
+    console.log("現在のバージョン:", localVersion, "最新:", latest);
 
-    if (latestVersion !== localVersion) {
-      alert(`🎉 新しいバージョン(${latestVersion})があります！\n最新版をダウンロードしてください。`);
+    if (latest !== localVersion) {
+      alert(`🆕 新しいバージョン(${latest})があります！最新版をダウンロードしてね。`);
     }
-  } catch (e) {
-    console.warn("更新チェック失敗:", e);
+  } catch (err) {
+    console.warn("更新チェック失敗:", err);
   }
 }
 
