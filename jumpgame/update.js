@@ -1,5 +1,5 @@
 // ==== 自分の現在バージョンをここに書く ====
-const localVersion = "1.0"; 
+const localVersion = "1.2"; 
 
 async function checkUpdate() {
   try {
