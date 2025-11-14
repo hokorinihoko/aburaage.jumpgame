@@ -4,7 +4,7 @@ let localVersion = "1.2";
 async function checkUpdate() {
   try {
     // GitHub上の最新バージョンを取得
-    //const res = await fetch("https://raw.githubusercontent.com/hokorinihoko/aburaage.jumpgame/main/version.txt?" + Date.now());
+    const res = await fetch("https://raw.githubusercontent.com/hokorinihoko/aburaage.jumpgame/main/version.txt?" + Date.now());
     const latestVersion = (await res.text()).trim();
 
     console.log("現在:", localVersion, "| 最新:", latestVersion);
