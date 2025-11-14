@@ -1,7 +1,6 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-
 let W, H;
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
