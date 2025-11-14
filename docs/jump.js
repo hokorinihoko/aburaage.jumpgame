@@ -341,14 +341,14 @@ jumpBtn.addEventListener('touchend', e=>{ keys['Space']=false; e.preventDefault(
 const SCORE_KEY = "aburaage_jump_highscore";
 
 // ページ読み込み時に記録を復元
-let highScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0;
-document.getElementById("highScore").textContent = "ハイスコア：" + highScore;
+let highScore2 = parseInt(localStorage.getItem(SCORE_KEY)) || 0;
+document.getElementById("highScore2").textContent = "ハイスコア：" + highScore2;
 
 // スコア更新時（例：ゲームオーバー時）
 function updateHighScore(currentScore) {
-  if (currentScore > highScore) {
-    highScore = currentScore;
-    localStorage.setItem(SCORE_KEY, highScore);
-    document.getElementById("highScore").textContent = "ハイスコア：" + highScore;
+  if (currentScore > highScore2) {
+    highScore2 = currentScore;
+    localStorage.setItem(SCORE_KEY, highScore2);
+    document.getElementById("highScore2").textContent = "ハイスコア：" + highScore2;
   }
 }
