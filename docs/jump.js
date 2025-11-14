@@ -1,4 +1,3 @@
-let highScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0;
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
